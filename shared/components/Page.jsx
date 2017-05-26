@@ -5,9 +5,11 @@ const remark = require('remark');
 const html = require('remark-html');
 const toc = require('../utils/mdtoc');
 const mdsections = require('../utils/mdsections');
+const mdpre = require('../utils/mdpre');
 
 const md = remark()
   .use(toc, {maxDepth: 2, tight: true, className: "page-toc"})
+  .use(mdpre)
   .use(mdsections)
   .use(html, {commonmark: true});
 

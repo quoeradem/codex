@@ -34,19 +34,30 @@ section:first-of-type > h2 {
 /* Markdown
  ------------------------------------------------------------------ */
 .page-markdown {
-  /*  Codeblocks  --------------------------------------------------------- */
+  /*  Code blocks  --------------------------------------------------------- */
   pre {
     background-color: #eeeeee;
 
     margin-bottom: 20px;
     overflow-x: auto;
     padding: 12px 12px 12px 24px;
+
+    border: 1px solid rgba(#000, 0.12);
   }
 
   code {
     font-family: 'Roboto Mono';
     overflow-x: scroll;
     color: #212121;
+  }
+
+  .code-header {
+    border-bottom-style: dashed;
+    margin-bottom: 0px;
+  }
+
+  .code-body {
+    border-top-style: none;
   }
 
   /*  Headings  --------------------------------------------------------- */
