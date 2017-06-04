@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import fetch from 'isomorphic-fetch';
 
 const remark = require('remark');
-const html = require('remark-html');
+const reactRenderer = require('remark-react');
 const toc = require('../utils/mdtoc');
 const mdsections = require('../utils/mdsections');
 const mdpre = require('../utils/mdpre');
@@ -11,7 +11,7 @@ const md = remark()
   .use(toc, {maxDepth: 2, tight: true, className: "page-toc"})
   .use(mdpre)
   .use(mdsections)
-  .use(html, {commonmark: true});
+  .use(reactRenderer, {sanitize: false});
 
 export default class Page extends Component {
   static fetchData(match) {
@@ -42,12 +42,12 @@ export default class Page extends Component {
     if (!this.state.data) return null;
 
     const {content, title} = this.state.data;
-    const markdown = md.process(content).contents;
+    const markup = md.processSync(content).contents;
 
     return (
       <div className="page-content">
         <h1 className="page-title">{title}</h1>
-        <div className="page-markdown" dangerouslySetInnerHTML={{__html: markdown}} />
+        <div className="page-markdown" children={markup} />
       </div>
     );
   }

@@ -34,8 +34,7 @@
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-tap-event-plugin": "^2.0.1",
-    "remark": "^6.2.0",
-    "remark-html": "^5.2.0",
+    "remark": "^7.0.1",
     "remark-react": "^4.0.0",
     "remark-slug": "^4.2.2",
     "webpack": "^2.4.1"
