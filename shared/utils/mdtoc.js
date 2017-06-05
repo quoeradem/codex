@@ -4,11 +4,11 @@
  */
 'use strict';
 
-var toc = require('mdast-util-toc');
+var util = require('mdast-util-toc');
 
-module.exports = attacher;
+module.exports = toc;
 
-function attacher(processor, options) {
+function toc(options) {
   var settings = options || {};
   var heading = 'contents';
   var depth = settings.maxDepth || 6;
@@ -18,7 +18,7 @@ function attacher(processor, options) {
   return transformer;
 
   function transformer(node) {
-    var result = toc(node, {
+    var result = util(node, {
       heading: heading,
       maxDepth: depth,
       tight: tight
