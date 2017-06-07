@@ -39,16 +39,48 @@ section:first-of-type > h2 {
     background-color: #eeeeee;
 
     margin-bottom: 20px;
-    overflow-x: auto;
     padding: 12px 12px 12px 24px;
 
     border: 1px solid rgba(#000, 0.12);
+
+    white-space: pre-wrap;
+    word-break: normal;
   }
 
   code {
     font-family: 'Roboto Mono';
-    overflow-x: scroll;
     color: #212121;
+
+    word-break: break-word;
+    hyphens: none;
+
+    display: block;
+    width: 100%;
+  }
+
+  pre:not(.code-header):hover:before {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 22px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top: 14px;
+    border-top-left-radius: 2px;
+
+    font-family: 'Roboto';
+    font-size: 12px;
+    font-weight: 500;
+
+    content: 'Click to copy';
+    background: #E0E0E0;
+    color: rgba(#000, 0.54);
+  }
+
+  pre.clicked:hover:before {
+    content: 'Copied';
+    background: #616161;
+    color: rgba(#FFF, 0.70);
   }
 
   .code-header {

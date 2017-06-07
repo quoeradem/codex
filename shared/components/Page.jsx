@@ -7,11 +7,13 @@ const toc = require('../utils/mdtoc');
 const mdsections = require('../utils/mdsections');
 const mdpre = require('../utils/mdpre');
 
+import Code from './Code';
+
 const md = remark()
   .use(toc, {maxDepth: 2, tight: true, className: "page-toc"})
   .use(mdpre)
   .use(mdsections)
-  .use(reactRenderer, {sanitize: false});
+  .use(reactRenderer, {sanitize: false, remarkReactComponents: {pre: Code}});
 
 export default class Page extends Component {
   static fetchData(match) {
