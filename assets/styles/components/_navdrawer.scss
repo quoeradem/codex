@@ -2,6 +2,25 @@ nav {
   padding-bottom: 40px;
 }
 
+.nav-header {
+  display: flex;
+  align-items: center;
+
+  height: 64px;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px 0 11px 24px;
+
+  span {
+    padding-left: 14px;
+    font-family: "Roboto Mono";
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .nav-footer {
   padding: 24px;
   text-align: center;

@@ -28,12 +28,6 @@ const styles = {
     textDecoration: 'none',
     color: '#fff',
     cursor: 'pointer'
-  },
-  navDrawer: {
-    position: 'fixed',
-    top: 64,
-    bottom: 0,
-    height: "calc(100% - 64px)"
   }
 }
 
@@ -91,7 +85,6 @@ export default class App extends Component {
           open={this.state.navDocked ? true : this.state.navDrawerOpen}
           onRequestChange={open => this.setState({navDrawerOpen: open})}
           onChangeList={() => this.setState({navDrawerOpen: false})}
-          style={styles.navDrawer}
         />
         <div className='layout-content'>
           {children}
