@@ -1,5 +1,4 @@
 'use strict';
-
 import visit from 'unist-util-visit';
 
 // base unist object models
@@ -12,20 +11,15 @@ const elementPre = (props, hProps) => ({
   ...props
 })
 
-const elementCode = (value, lang) => ({
+const elementCode = (children, props) => ({
   type: 'element',
   tagName: 'code',
-  properties: {
-    className: `language-${lang}`
-  },
-  children: [{
-    type: 'text',
-    value
-  }]
+  properties: {...props},
+  children: children
 })
 
 const createChildren = (node) => {
-  const {lang, value} = node;
+  const {data = {hChildren: {}}, lang, value} = node;
 
   const test = /\n---\n/.exec(value);
   if (!test) return [node];
@@ -35,8 +29,13 @@ const createChildren = (node) => {
 
   const nodeHeader = elementPre({value: hStr}, {className: 'code-header'});
   const nodeParent = elementPre(null, {className: 'code-body'});
-  const nodeChild = elementCode(bStr, lang);
-  nodeParent.data.hChildren = [nodeChild];
+
+  // Syntax highlighting compat -- use node's current hChildren (skipping title/delimiter elements)
+  // Normally hChildren should be empty.
+  const nodeChildren = data.hChildren.length > 4 ? data.hChildren.slice(4) : [{type: 'text', value: bStr}];
+  const {hProperties = lang ? {className: `language-${lang}`} : {}} = data;
+
+  nodeParent.data.hChildren = [elementCode(nodeChildren, hProperties)];
 
   return [nodeHeader, nodeParent]
 }

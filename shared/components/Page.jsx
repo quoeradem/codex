@@ -6,11 +6,13 @@ const reactRenderer = require('remark-react');
 const toc = require('../utils/mdtoc');
 const mdsections = require('../utils/mdsections');
 const mdpre = require('../utils/mdpre');
+const mdhighlight = require('../utils/mdhighlight');
 
 import Code from './Code';
 
 const md = remark()
   .use(toc, {maxDepth: 2, tight: true, className: "page-toc"})
+  .use(mdhighlight)
   .use(mdpre)
   .use(mdsections)
   .use(reactRenderer, {sanitize: false, remarkReactComponents: {pre: Code}});

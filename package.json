@@ -29,6 +29,7 @@
     "material-ui": "^0.18.1",
     "mdast-util-to-string": "^1.0.2",
     "mdast-util-toc": "^2.0.1",
+    "prismjs": "^1.6.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-router": "^4.1.1",
