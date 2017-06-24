@@ -6,6 +6,8 @@ export default function attacher() {
   return transformer;
 }
 
+const re = /^[\n\s]+$/;
+
 const TextElement = (value) => ({
   type: 'text',
   value: value
@@ -34,12 +36,28 @@ const getChildren = (nodes, children = []) => {
   return getChildren(rest, children.concat(parent));
 }
 
+const combineTokens = (children, tokens = []) => {
+  if (children.length === 0) return tokens;
+
+  let [cur, ...rest] = children;
+  const next = rest[0];
+
+  if (typeof cur === 'object' && re.test(next)) {
+    cur.content += next;
+    return combineTokens(rest.slice(1), tokens.concat(cur));
+  }
+
+  return combineTokens(rest, tokens.concat(cur));
+}
+
 const transformer = ast => visit(ast, 'code', node => {
   const {data, lang, value} = node;
 
   if (!lang) return;
   if (!data) node.data = {};
 
-  const tokens = Prism.tokenize(value, {...Prism.languages[lang]});
+  let tokens = Prism.tokenize(value, {...Prism.languages[lang]});
+  tokens = combineTokens(tokens);
+
   node.data.hChildren = getChildren(tokens);
 })

@@ -36,7 +36,8 @@
     "react-router-dom": "^4.1.1",
     "react-tap-event-plugin": "^2.0.1",
     "remark": "^7.0.1",
-    "remark-react": "^4.0.0",
+    "remark-react": "Use fork of 'remark-react' until e0c00d2 is merged",
+    "remark-react": "quoeradem/remark-react",
     "remark-slug": "^4.2.2",
     "webpack": "^2.4.1"
   },

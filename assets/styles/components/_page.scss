@@ -1,5 +1,9 @@
 @import '../../node_modules/prismjs/themes/prism.css';
 
+/* PrismJS overrides
+ ------------------------------------------------------------------ */
+.token.operator { background: none; }
+
 /* Spacing
  ------------------------------------------------------------------ */
 .page-content {

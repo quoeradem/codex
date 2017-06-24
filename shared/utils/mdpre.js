@@ -18,6 +18,30 @@ const elementCode = (children, props) => ({
   children: children
 })
 
+/* Workaround for mdhighlight
+ * Since the mdhighlight plugin is processed
+ * before this plugin, children are parsed for
+ * the '---↵' delimiter so that the title/delimiter
+ * elements can be skipped.
+ *
+ * Currently, PrismJS tokenize() processes the
+ * delimiter as two separate tokens.
+ */
+const getContentOffset = children => {
+  let _children = [];
+
+  // extract 'value' props from children
+  for (const child of children) {
+    _children.push(child.children ? child.children[0].value : '');
+  }
+
+  // iterate children until delimiter elements are found
+  for (let i = 0; i < _children.length;) {
+    const cur = _children[i++], next = _children[i];
+    if (cur === '--' && next === '-\n') return ++i;
+  }
+}
+
 const createChildren = (node) => {
   const {data = {hChildren: {}}, lang, value} = node;
 
@@ -32,7 +56,8 @@ const createChildren = (node) => {
 
   // Syntax highlighting compat -- use node's current hChildren (skipping title/delimiter elements)
   // Normally hChildren should be empty.
-  const nodeChildren = data.hChildren.length > 4 ? data.hChildren.slice(4) : [{type: 'text', value: bStr}];
+  const offset = Array.isArray(data.hChildren) && getContentOffset(data.hChildren);
+  const nodeChildren = offset ? data.hChildren.slice(offset) : [{type: 'text', value: bStr}];
   const {hProperties = lang ? {className: `language-${lang}`} : {}} = data;
 
   nodeParent.data.hChildren = [elementCode(nodeChildren, hProperties)];
