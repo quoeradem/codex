@@ -1,21 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import fetch from 'isomorphic-fetch';
 
-const remark = require('remark');
-const reactRenderer = require('remark-react');
-const toc = require('../utils/mdtoc');
-const mdsections = require('../utils/mdsections');
-const mdpre = require('../utils/mdpre');
-const mdhighlight = require('../utils/mdhighlight');
-
+import unified from 'unified';
+import reactRenderer from 'remark-react';
 import Code from './Code';
 
-const md = remark()
-  .use(toc, {maxDepth: 2, tight: true, className: "page-toc"})
-  .use(mdhighlight)
-  .use(mdpre)
-  .use(mdsections)
-  .use(reactRenderer, {sanitize: false, remarkReactComponents: {pre: Code}});
+const processor = unified().use(reactRenderer, {sanitize: false, remarkReactComponents: {pre: Code}});
 
 export default class Page extends Component {
   static fetchData(match) {
@@ -46,7 +36,8 @@ export default class Page extends Component {
     if (!this.state.data) return null;
 
     const {content, title} = this.state.data;
-    const markup = md.processSync(content).contents;
+    const _content = processor.runSync(JSON.parse(content));
+    const markup = processor.stringify(_content);
 
     return (
       <div className="page-content">

@@ -2,10 +2,23 @@ import fs from 'fs';
 import {Map, Record, fromJS, toMap} from 'immutable';
 import PageRecord from './models/PageRecord';
 
-const PAGES_DIR = '_pages';
+import unified from 'unified';
+import markdown from 'remark-parse';
+import toc from '../shared/utils/mdtoc';
+import mdsections from '../shared/utils/mdsections'
+import mdpre from '../shared/utils/mdpre'
+import mdhighlight from '../shared/utils/mdhighlight'
 
+const PAGES_DIR = '_pages';
 const pathPattern = /[^\w-]/;
 const wsPattern = /:\s+/;
+
+const processor = unified()
+  .use(markdown, {commonmark: true})
+  .use(toc, {maxDepth: 2, tight: true, className: "page-toc"})
+  .use(mdhighlight)
+  .use(mdpre)
+  .use(mdsections)
 
 export default class Cache {
   constructor() {
@@ -78,5 +91,9 @@ const parseYAML = (md) => {
     yaml.permalink = createPermalink(title);
   }
 
-  return {...yaml, content: md}
+  const content = processor.parse(md);
+  processor.runSync(content);
+  const ast = JSON.stringify(content)
+
+  return {...yaml, content: ast}
 };
