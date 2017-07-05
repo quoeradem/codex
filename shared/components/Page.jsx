@@ -5,7 +5,15 @@ import unified from 'unified';
 import reactRenderer from 'remark-react';
 import Code from './Code';
 
-const processor = unified().use(reactRenderer, {sanitize: false, remarkReactComponents: {pre: Code}});
+import merge from 'deepmerge';
+import ghSchema from 'hast-util-sanitize/lib/github.json';
+
+const schema = merge(ghSchema, {
+  attributes: {'*': ['className']},
+  tagNames: ['span', 'section']
+});
+
+const processor = unified().use(reactRenderer, {sanitize: schema, remarkReactComponents: {pre: Code}});
 
 export default class Page extends Component {
   static fetchData(match) {

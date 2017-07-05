@@ -17,6 +17,7 @@
   "dependencies": {
     "babel-polyfill": "^6.20.0",
     "chokidar": "^1.6.1",
+    "deepmerge": "^1.4.4",
     "github-slugger": "^1.1.1",
     "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
