@@ -29,19 +29,20 @@ export default class Cache {
     if (!files) return;
 
     const json = files.reduce((acc, cur) => {
-      const md = fs.readFileSync(`${PAGES_DIR}/${cur}`, 'utf8');
-      const page = parseYAML(md);
+      const page = readFile(cur);
 
-      return {...acc, [cur]: page}
+      if (!page) return {...acc};
+      return {...acc, [cur]: page};
     }, {});
 
     this.cache = fromJS(json, (k,v) => k !== "" ? new PageRecord(v) : v.toMap());
   }
 
   add(file) {
-    const md = fs.readFileSync(`${PAGES_DIR}/${file}`, 'utf8');
-    const page = parseYAML(md);
+    const page = readFile(file);
 
+    // Update cache iff 'page' is valid
+    if (!page) return;
     this.cache = this.cache.set(file, new PageRecord(page));
   }
 
@@ -50,50 +51,46 @@ export default class Cache {
   }
 
   update(file) {
-    const md = fs.readFileSync(`${PAGES_DIR}/${file}`, 'utf8');
-    const page = parseYAML(md);
-    this.cache = this.cache.update(file, record => new PageRecord(page));
+    const page = readFile(file);
+
+    // Update cached page if updated 'page' is valid, otherwise delete from cache.
+    this.cache = page ? this.cache.update(file, record => new PageRecord(page)) : this.cache.delete(file);
   }
 }
 
-// convert front matter to JS object
-const parseFrontmatter = (yaml) => {
-  return yaml.reduce((acc, cur) => {
-    const buf = cur.replace(wsPattern, ':');
-    const [key,value] = buf.split(/:(.+)/);
+// wrapper that reads file and returns object containing parsed YAML / markdown
+const readFile = file => parseYAML(fs.readFileSync(`${PAGES_DIR}/${file}`, 'utf8'))
 
-    if (!key || !value) return {...acc};
-    return {...acc, [key]: value};
-  }, {});
-}
+// convert frontmatter to JS object
+const parseFrontmatter = yaml => yaml.reduce((acc, cur) => {
+  const [k, v] = cur.replace(wsPattern, ':').split(/:(.+)/);
+  return (!k & !v) ? {...acc} : {...acc, [k]: v};
+}, {})
 
 const createPermalink = (title) => {
   if (!title) return '/';
   const permalink = title.replace(/\s/g, '-').replace(pathPattern, '').toLowerCase();
-
   return `/${permalink}`;
 }
 
 const parseYAML = (md) => {
-  let yaml = {};
   const arr = md.split('\n');
+  if (arr[0] !== '---') return;
 
-  if (arr[0] === '---') {
-    const index = arr.indexOf('---', 1);
-    const frontmatter = arr.slice(1, index);
-
-    yaml = parseFrontmatter(frontmatter);
-  }
+  // process frontmatter
+  const index = arr.indexOf('---', 1);
+  const frontmatter = arr.slice(1, index);
+  const yaml = parseFrontmatter(frontmatter);
 
   let {title, permalink} = yaml;
+  if (!title) return;
+  if (!permalink) yaml.permalink = createPermalink(title);
 
-  if (!permalink) {
-    yaml.permalink = createPermalink(title);
-  }
-
-  const content = processor.parse(md);
-  processor.runSync(content);
-  const ast = JSON.stringify(content)
+  // process markdown -> AST
+  const content = arr.slice(index + 1).join("\n");
+  const markup = processor.parse(content);
+  processor.runSync(markup);
+  const ast = JSON.stringify(markup);
 
   return {...yaml, content: ast}
 };
