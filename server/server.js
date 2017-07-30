@@ -31,21 +31,21 @@ const getPages = (cache) => {
   for (const {title, permalink} of cache.values()) {
     pages.push({title, permalink});
   }
-  return pages;
+  return pages.map(({title}, index) => ({index, title: title.toLowerCase()}))
+    .sort(({title: i}, {title: j}) => +(i > j) || +(i === j) - 1)
+    .map(({index}) => pages[index]);
 }
 
 export const render = async (ctx, cache) => {
+  const context = {};
   const {url} = ctx;
   const pages = getPages(cache);
-
-  const context = {};
+  
   const match = routes.reduce((matches, route) => matchPath(url, route, { exact: true }) || matches, null);
 
   const initialComponent = renderToString(
     <Router location={url} context={context}>
-      <App pages={pages}>
-        {createRoutes()}
-      </App>
+      <App pages={pages} children={createRoutes()} />
     </Router>
   );
 
