@@ -82,7 +82,11 @@ const parseYAML = (md) => {
   const frontmatter = arr.slice(1, index);
   const yaml = parseFrontmatter(frontmatter);
 
-  let {title, permalink} = yaml;
+  const {title, permalink, published} = yaml;
+
+  // return if 'published' is falsy
+  if (published && published.toLowerCase() === 'false' || published === '0') return;
+
   if (!title) return;
   if (!permalink) yaml.permalink = createPermalink(title);
 
