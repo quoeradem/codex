@@ -221,3 +221,35 @@ section:first-of-type > h2 {
     font-weight: normal;
   }
 }
+
+/* Admonition
+ ------------------------------------------------------------------ */
+div[class^=admonition-] {
+  padding: 5px;
+  margin: 7px 0;
+  border: 1px solid;
+
+  p { margin-bottom: 0; }
+
+  pre code { padding: 0; }
+
+  code {
+    display: inline-block;
+    width: unset;
+  }
+}
+
+.admonition-note {
+  background-color: #ddf;
+  border-color: #bbd !important;
+}
+
+.admonition-tip {
+  background-color: #dfd;
+  border-color: #bdb !important;
+}
+
+.admonition-warning {
+  background-color: #fdd;
+  border-color: #dbb !important;
+}

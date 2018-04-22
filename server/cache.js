@@ -8,6 +8,7 @@ import toc from '../shared/utils/mdtoc';
 import mdsections from '../shared/utils/mdsections'
 import mdpre from '../shared/utils/mdpre'
 import mdhighlight from '../shared/utils/mdhighlight'
+import admonition from '../shared/utils/admonition';
 
 const PAGES_DIR = '_pages';
 const pathPattern = /[^\w-]/;
@@ -15,6 +16,7 @@ const wsPattern = /:\s+/;
 
 const processor = unified()
   .use(markdown, {commonmark: true})
+  .use(admonition)
   .use(toc, {maxDepth: 2, tight: true, className: "page-toc"})
   .use(mdhighlight)
   .use(mdpre)

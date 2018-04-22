@@ -81,6 +81,7 @@ const transformer = ast => {
 
   indexes.map((index, i) => {
     const node = ast.children[index];
+    if (!node) return;
     const nextIndex = indexes[i + 1] || indexes[i];
 
     const childNodes = createChildren(node);
